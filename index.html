@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CREWBOARD — Whitepaper</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cyan: #00e5ff;
+    --magenta: #d400ff;
+    --purple: #7b2fff;
+    --teal: #00b4d8;
+    --bg: #050508;
+    --bg2: #0a0a12;
+    --card: #0d0d1a;
+    --text: #e8e8f0;
+    --muted: #7070a0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding: 2rem;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 10%, rgba(0,180,216,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 60%, rgba(123,47,255,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 80% 70%, rgba(212,0,255,0.10) 0%, transparent 60%);
+    z-index: 0;
+  }
+
+  /* neural net dots */
+  .dots {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle, rgba(0,229,255,0.5) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.08;
+    z-index: 0;
+  }
+
+  /* brain glow orb */
+  .brain-orb {
+    position: absolute;
+    top: -10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 500px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(120,40,200,0.35) 0%, rgba(0,180,216,0.1) 50%, transparent 75%);
+    filter: blur(40px);
+    z-index: 0;
+    animation: pulse 6s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+    50% { opacity: 1; transform: translateX(-50%) scale(1.06); }
+  }
+
+  .hero-content { position: relative; z-index: 1; max-width: 800px; }
+
+  .hero-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--cyan);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-logo {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: clamp(3.5rem, 10vw, 7rem);
+    letter-spacing: 0.05em;
+    line-height: 1;
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+  }
+
+  .hero-logo span:first-child { color: #fff; }
+  .hero-logo span:last-child { color: var(--cyan); }
+
+  .hero-tagline {
+    font-size: 1.1rem;
+    color: var(--muted);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+  }
+
+  .btn-primary {
+    padding: 0.85rem 2.2rem;
+    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    color: #000;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(0,229,255,0.4);
+  }
+
+  .btn-outline {
+    padding: 0.85rem 2.2rem;
+    background: transparent;
+    color: var(--cyan);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid rgba(0,229,255,0.4);
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s, border-color 0.2s, background 0.2s;
+  }
+
+  .btn-outline:hover {
+    transform: translateY(-2px);
+    border-color: var(--cyan);
+    background: rgba(0,229,255,0.05);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fadeUp 1s 1.5s forwards;
+  }
+
+  .scroll-hint span {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.25em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--cyan), transparent);
+    animation: scrollDown 2s 2s infinite;
+  }
+
+  @keyframes scrollDown {
+    0% { opacity: 0; transform: scaleY(0); transform-origin: top; }
+    50% { opacity: 1; transform: scaleY(1); }
+    100% { opacity: 0; transform: scaleY(1); transform-origin: bottom; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    padding: 6rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--cyan);
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 1px;
+    background: var(--cyan);
+  }
+
+  .section-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title em {
+    font-style: normal;
+    color: var(--cyan);
+  }
+
+  .section-title .accent-pink {
+    color: var(--magenta);
+  }
+
+  .section-body {
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.8;
+    max-width: 680px;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(0,229,255,0.2), transparent);
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ── PROBLEM ── */
+  .challenge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .challenge-card {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-top: 2px solid var(--magenta);
+    padding: 1.8rem;
+    border-radius: 6px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .challenge-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 40px rgba(212,0,255,0.1);
+  }
+
+  .challenge-card h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+    color: #fff;
+  }
+
+  .challenge-card p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  /* ── SOLUTION / FEATURES ── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  @media (max-width: 640px) {
+    .features-grid { grid-template-columns: 1fr; }
+  }
+
+  .feature-card {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 8px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--cyan), var(--purple));
+  }
+
+  .feature-card:nth-child(2)::before { background: linear-gradient(to right, var(--magenta), var(--purple)); }
+  .feature-card:nth-child(3)::before { background: linear-gradient(to right, var(--purple), var(--teal)); }
+  .feature-card:nth-child(4)::before { background: linear-gradient(to right, var(--teal), var(--cyan)); }
+
+  .feature-card:hover { transform: translateY(-3px); }
+
+  .feature-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.2rem;
+    font-size: 1.2rem;
+  }
+
+  .ic-1 { background: rgba(0,229,255,0.12); color: var(--cyan); }
+  .ic-2 { background: rgba(212,0,255,0.12); color: var(--magenta); }
+  .ic-3 { background: rgba(123,47,255,0.12); color: var(--purple); }
+  .ic-4 { background: rgba(0,180,216,0.12); color: var(--teal); }
+
+  .feature-card h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.6rem;
+  }
+
+  .feature-card p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  /* ── TALENT TYPES ── */
+  .talent-row {
+    display: flex;
+    gap: 1rem;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .talent-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.75rem 1.2rem;
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 40px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .talent-pill:hover { border-color: var(--cyan); color: var(--cyan); }
+
+  .pill-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  /* ── ROADMAP ── */
+  .roadmap {
+    margin-top: 3rem;
+    position: relative;
+  }
+
+  .roadmap-line {
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--cyan), var(--magenta), transparent);
+  }
+
+  .roadmap-item {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+    padding-left: 3rem;
+    position: relative;
+  }
+
+  .roadmap-dot {
+    position: absolute;
+    left: 12px;
+    top: 4px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--cyan);
+    background: var(--bg);
+    z-index: 1;
+  }
+
+  .roadmap-item:nth-child(2) .roadmap-dot { border-color: var(--purple); }
+  .roadmap-item:nth-child(3) .roadmap-dot { border-color: var(--magenta); }
+  .roadmap-item:nth-child(4) .roadmap-dot { border-color: var(--teal); border-style: dashed; }
+
+  .roadmap-period {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--cyan);
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+    padding-top: 2px;
+    min-width: 80px;
+  }
+
+  .roadmap-item:nth-child(2) .roadmap-period { color: var(--purple); }
+  .roadmap-item:nth-child(3) .roadmap-period { color: var(--magenta); }
+  .roadmap-item:nth-child(4) .roadmap-period { color: var(--teal); }
+
+  .roadmap-desc h4 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+
+  .roadmap-desc p {
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  /* ── BUSINESS MODEL ── */
+  .model-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  @media (max-width: 600px) { .model-row { grid-template-columns: 1fr; } }
+
+  .model-card {
+    background: var(--card);
+    border-radius: 8px;
+    padding: 2rem;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .model-card .stat {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--cyan);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .model-card .stat.purple { color: var(--purple); }
+
+  .model-card p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  /* ── CTA ── */
+  .cta-section {
+    text-align: center;
+    padding: 6rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 50% 50%, rgba(0,180,216,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 30% 50%, rgba(123,47,255,0.08) 0%, transparent 60%);
+  }
+
+  .cta-section h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-section p {
+    color: var(--muted);
+    max-width: 550px;
+    margin: 0 auto 2.5rem;
+    font-size: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-section .hero-btns { position: relative; z-index: 1; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 2rem;
+    text-align: center;
+  }
+
+  footer p {
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  footer .logo-f {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  footer .logo-f span:last-child { color: var(--cyan); }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.2rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(5,5,8,0.7);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .nav-logo {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .nav-logo span:last-child { color: var(--cyan); }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--cyan); }
+
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo"><span>CREW</span><span>BOARD</span></a>
+  <ul class="nav-links">
+    <li><a href="#challenge">Challenge</a></li>
+    <li><a href="#solution">Solution</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#invest">Invest</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="dots"></div>
+  <div class="brain-orb"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Whitepaper · 2026</div>
+    <h1 class="hero-logo"><span>CREW</span><span>BOARD</span></h1>
+    <p class="hero-tagline">Connecting talents. Building crews. The future of collaboration is here.</p>
+    <div class="hero-btns">
+      <a href="#challenge" class="btn-primary">Read Whitepaper</a>
+      <a href="#invest" class="btn-outline">Investor Access</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</div>
+
+<!-- CHALLENGE -->
+<section id="challenge">
+  <div class="section-label">01 / The Challenge</div>
+  <h2 class="section-title">Building in Web3 is <em>complex.</em><br>Finding the right team is <span class="accent-pink">harder.</span></h2>
+  <p class="section-body">The Web3 sector is booming — yet talent acquisition remains fragmented and high-risk. Investors and developers search for experts across dozens of channels with no unified, trustworthy platform to simplify this process. Current solutions lack integrated verification, escrow payments, or native Web3 features.</p>
+
+  <div class="challenge-grid">
+    <div class="challenge-card">
+      <h3>No Verification</h3>
+      <p>Anonymous profiles lead to scams or unqualified applicants with no accountability.</p>
+    </div>
+    <div class="challenge-card">
+      <h3>Payment Risk</h3>
+      <p>Freelancers risk non-payment; projects risk incomplete delivery with no protection.</p>
+    </div>
+    <div class="challenge-card">
+      <h3>Centralized</h3>
+      <p>Traditional platforms have little to no integration with Web3-native technologies.</p>
+    </div>
+    <div class="challenge-card">
+      <h3>No Mobile</h3>
+      <p>A fast-moving market demands real-time updates and a mobile-first experience.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SOLUTION -->
+<section id="solution">
+  <div class="section-label">02 / The Solution</div>
+  <h2 class="section-title">Hire <em>elite</em> Web3 talent.<br>Assemble your crew in minutes.</h2>
+  <p class="section-body">Crewboard is a web-based booking platform built in collaboration with jellyjelly and wobbles devs. It lets investors, developers, and idea owners hire and book verified talent directly — with built-in escrow, proof-of-work profiles, and smart matching.</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon ic-1">✦</div>
+      <h3>Strict Verification</h3>
+      <p>Every profile requires verifiable proof of past work — GitHub, NFT collections, DAO contributions, smart contract deployments. No anonymous actors.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon ic-2">⚡</div>
+      <h3>Direct Booking</h3>
+      <p>Search by skill set and book with one click. Smart matching connects you with the right developer, designer, or marketer for your project instantly.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon ic-3">🔒</div>
+      <h3>Escrow Payments</h3>
+      <p>Crypto-native escrow holds funds and releases them only after successful delivery and approval — protecting both clients and talent.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon ic-4">🚀</div>
+      <h3>Team & Investor Hub</h3>
+      <p>Anyone with an idea can build a team or attract investors — turning Crewboard into a one-stop hub for Web3 project creation.</p>
+    </div>
+  </div>
+
+  <div class="talent-row" style="margin-top:2.5rem">
+    <div class="talent-pill"><span class="pill-dot" style="background:var(--cyan)"></span>Devs — Smart Contracts & Frontend</div>
+    <div class="talent-pill"><span class="pill-dot" style="background:var(--magenta)"></span>Raiders — Community & Security</div>
+    <div class="talent-pill"><span class="pill-dot" style="background:var(--purple)"></span>Launch Spec. — Tokenomics & Deployment</div>
+    <div class="talent-pill"><span class="pill-dot" style="background:var(--teal)"></span>Marketing — Growth & Partnerships</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- BUSINESS MODEL -->
+<section id="invest">
+  <div class="section-label">03 / Business Model</div>
+  <h2 class="section-title">Transparent. Pay-per-use.<br><em>No subscriptions.</em></h2>
+  <p class="section-body">The platform is financed through a booking fee charged per successful transaction — no subscriptions, no lock-in. Future phases introduce a native utility token with staking, governance rights, and ecosystem rewards.</p>
+
+  <div class="model-row">
+    <div class="model-card">
+      <div class="stat">5–10%</div>
+      <p>Transaction fee per successful booking. Simple, transparent, pay-per-use monetization that aligns platform incentives with successful delivery.</p>
+    </div>
+    <div class="model-card">
+      <div class="stat purple">$39B+</div>
+      <p>Projected global blockchain market by 2026. Crewboard targets the critical talent bottleneck inside this rapidly expanding ecosystem.</p>
+    </div>
+    <div class="model-card">
+      <div class="stat" style="font-size:1.6rem; color: var(--magenta)">Private Round</div>
+      <p>A private fundraising round will precede the native token launch — accelerating development, partnerships, and ecosystem growth.</p>
+    </div>
+    <div class="model-card">
+      <div class="stat" style="font-size:1.6rem; color: var(--teal)">Native Token</div>
+      <p>Future utility token with staking for fee discounts, governance participation, and rewards for verified contributors on the platform.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="section-label">04 / Roadmap</div>
+  <h2 class="section-title">The <em>network</em> is live.<br>Here's what's next.</h2>
+
+  <div class="roadmap">
+    <div class="roadmap-line"></div>
+
+    <div class="roadmap-item">
+      <div class="roadmap-dot"></div>
+      <div class="roadmap-period">Q1–Q2 2026</div>
+      <div class="roadmap-desc">
+        <h4>MVP Launch</h4>
+        <p>Core platform development with jellyjelly & wobbles devs. Beta launch with verification system and escrow payment infrastructure.</p>
+      </div>
+    </div>
+
+    <div class="roadmap-item">
+      <div class="roadmap-dot"></div>
+      <div class="roadmap-period">Q3 2026</div>
+      <div class="roadmap-desc">
+        <h4>Advanced Matching</h4>
+        <p>Enhanced search algorithms, AI-assisted smart matching, first strategic partnerships with Web3 projects and DAOs.</p>
+      </div>
+    </div>
+
+    <div class="roadmap-item">
+      <div class="roadmap-dot"></div>
+      <div class="roadmap-period">Q4 2026</div>
+      <div class="roadmap-desc">
+        <h4>Mobile App + Token Prep</h4>
+        <p>iOS & Android release with real-time notifications and project management. Begin tokenization architecture and private fundraising round.</p>
+      </div>
+    </div>
+
+    <div class="roadmap-item">
+      <div class="roadmap-dot"></div>
+      <div class="roadmap-period">2027+</div>
+      <div class="roadmap-desc">
+        <h4>Global Expansion</h4>
+        <p>AI-enhanced matching, deeper community governance features, full token launch, and international market penetration.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-bg"></div>
+  <h2>Form your<br><span style="color:var(--cyan)">ultimate crew.</span></h2>
+  <p>For investors, developers, and creators — this is your opportunity to be part of the infrastructure powering the next wave of Web3 innovation.</p>
+  <div class="hero-btns">
+    <a href="#" class="btn-primary">Request Early Access</a>
+    <a href="#" class="btn-outline">Partner With Us</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo-f"><span>CREW</span><span>BOARD</span></div>
+  <p>© 2026 Crewboard · Connecting talents. Building crews. · The Future of Collaboration Is Here</p>
+</footer>
+
+</body>
+</html>
